@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Gráficos - Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+       :root{
+--bg-100: #0f1724;
+--card: #ffffff;
+--muted: #8b8fa6;
+--accent1: #667eea;
+--accent2: #764ba2;
+--success: #2ecc71;
+--danger: #e74c3c;
+--warning: #f39c12;
+--glass: rgba(255,255,255,0.06);
+}
+
+/* RESET */
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Inter","Segoe UI",Tahoma,Geneva,Verdana,sans-serif}
+html,body{height:100%}
+body{
+background: radial-gradient(1200px 600px at 10% 10%, rgba(102,126,234,0.08), transparent),
+radial-gradient(900px 400px at 90% 90%, rgba(118,75,162,0.06), transparent),
+linear-gradient(180deg, #071027 0%, #081222 100%);
+color:#e6eef8;
+min-height:100vh;
+padding:28px 16px;
+}
+
+/* NAVBAR */
+.navbar{
+max-width:1200px;
+margin:0 auto 20px;
+display:flex;
+gap:16px;
+align-items:center;
+justify-content:space-between;
+background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+padding:14px 18px;
+border-radius:12px;
+backdrop-filter: blur(6px);
+border:1px solid rgba(255,255,255,0.03);
+box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+}
+.navbar img{
+width:52px;
+height:52px;
+object-fit:cover;
+border-radius:10px;
+box-shadow: 0 6px 18px rgba(102,126,234,0.08), inset 0 -6px 14px rgba(0,0,0,0.2);
+border:1px solid rgba(255,255,255,0.04);
+background:linear-gradient(180deg,#fff 0%, #f7f8ff 100%);
+}
+.navbar h1{
+font-size:18px;
+color:var(--card);
+}
+
+/* NAV LINKS */
+.nav-links{
+display:flex;
+gap:12px;
+}
+.nav-links a, .nav-links button{
+color: var(--muted);
+text-decoration:none;
+padding:8px 12px;
+border-radius:8px;
+font-weight:600;
+background:transparent;
+transition:0.2s;
+}
+.nav-links a.active, .nav-links button:hover{
+background:linear-gradient(90deg,var(--accent1),var(--accent2));
+color:#fff;
+box-shadow: 0 6px 20px rgba(102,126,234,0.12);
+}
+
+/* CONTAINER PRINCIPAL */
+.container{
+max-width:1200px;
+margin:0 auto;
+display:grid;
+grid-template-columns: 1fr;
+gap:20px;
+}
+
+/* CARDS DE SUMÁRIO */
+.cards-grid{
+display:grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap:16px;
+}
+.summary-card{
+background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+border-radius:12px;
+padding:16px;
+text-align:center;
+box-shadow:0 8px 25px rgba(2,6,23,0.6);
+transition:0.3s;
+cursor:pointer;
+}
+.summary-card:hover{
+transform: translateY(-4px);
+box-shadow:0 10px 30px rgba(102,126,234,0.12);
+}
+.summary-card h2{
+font-size:1.5rem;
+color: var(--accent1);
+}
+
+/* GRÁFICOS */
+.charts-grid{
+display:grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap:16px;
+}
+.chart-card{
+background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+border-radius:12px;
+padding:16px;
+box-shadow:0 8px 25px rgba(2,6,23,0.6);
+transition:0.3s;
+}
+.chart-card:hover{
+transform: translateY(-3px);
+}
+.chart-card h4{
+color: var(--accent1);
+margin-bottom:12px;
+}
+.chart-card canvas{
+width:100% !important;
+height:auto !important;
+}
+
+/* TABELAS */
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+background: rgba(255,255,255,0.03);
+border-radius:10px;
+overflow:hidden;
+}
+table th, table td{
+padding:10px;
+text-align:left;
+border-bottom:1px solid rgba(255,255,255,0.1);
+color:#e6eef8;
+}
+table th{
+background: rgba(102,126,234,0.15);
+color: #fff;
+}
+table tr:hover{
+background: rgba(102,126,234,0.08);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.nav-links{
+flex-direction:column;
+width:100%;
+}
+.cards-grid{
+grid-template-columns:1fr;
+}
+.charts-grid{
+grid-template-columns:1fr;
+}
+}
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo-container">
+                <img src="PHOTO-2025-10-23-15-30-45.jpg" alt="Logo Fly Mídia"
+                    style="height:50px;border-radius:10px;margin-right:1rem;">
+            </div>
+            <h1>Sistema de Contratos - Admin</h1>
+            <div class="nav-links">
+                <a href="index.html">Área do Cliente</a>
+                <a href="admin.html">Contratos</a>
+                <a href="grafico.html" class="active">Gráficos</a>
+                <button id="btnLogout">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Dashboard de Gráficos</h2>
+        <p class="subtitle">Visualize os contratos e faturamento da Fly Mídia</p>
+
+        <div class="cards-grid">
+            <div class="summary-card">
+                <h2 id="totalContratos">0</h2>
+                <h3>Total de Contratos</h3>
+            </div>
+            <div class="summary-card">
+                <h2 id="totalFaturamento">R$0,00</h2>
+                <h3>Faturamento Total</h3>
+            </div>
+            <div class="summary-card">
+                <h2 id="pendentes">0</h2>
+                <h3>Pendentes</h3>
+            </div>
+            <div class="summary-card">
+                <h2 id="vencidos">0</h2>
+                <h3>Vencidos</h3>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h4>Status de Pagamento</h4><canvas id="chartStatus"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Contratos por Cidade</h4><canvas id="chartCidades"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Faturamento por Cidade</h4><canvas id="chartFaturamento"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Evolução Mensal do Faturamento</h4><canvas id="chartEvolucao"></canvas>
+            </div>
+        </div>
+
+        <h3>Detalhes Contratos Pendentes</h3>
+        <table id="tabelaPendentes">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Cidade</th>
+                    <th>Admin</th>
+                    <th>Local de Divulgação</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Admins com mais contratos</h3>
+        <table id="tabelaAdmins">
+            <thead>
+                <tr>
+                    <th>Admin</th>
+                    <th>Qtd de Contratos</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn58dQwxfp-WAIpU3jcQJ1ZFhs7AHjTk",
+            authDomain: "flymidia-ccd8f.firebaseapp.com",
+            projectId: "flymidia-ccd8f",
+            storageBucket: "flymidia-ccd8f.appspot.com",
+            messagingSenderId: "79513987797",
+            appId: "1:79513987797:web:1f3854bcaaf4500001d05c",
+            measurementId: "G-S89Y3ZTEG6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let charts = {};
+
+        const formatarValor = v => new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(v || 0);
+        const formatarData = d => {
+            const dt = new Date(d);
+            return isNaN(dt) ? d :
+                `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+        }
+
+        const criarChart = (ctx, type, labels, data, bgColor) => {
+            if (charts[ctx.canvas.id]) charts[ctx.canvas.id].destroy();
+            charts[ctx.canvas.id] = new Chart(ctx, {
+                type,
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: bgColor
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        const locaisMap = {
+            rodolfos: "RODOLFOS",
+            "2quatro2": "2QUATRO2 BEACH",
+            combo: "RODOLFOS + 2QUATRO2 BEACH"
+        };
+
+        async function carregarDashboard() {
+            try {
+                const snapshot = await db.collection("contratos").get();
+                const contratos = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                const totalContratos = contratos.length;
+                const totalFaturamento = contratos.reduce((acc, c) => acc + (parseFloat(c.valor_contrato) || 0), 0);
+                const hoje = new Date();
+                const pendentes = contratos.filter(c => !c.status_pagamento && new Date(c.data_vencimento) >= hoje)
+                    .length;
+                const vencidos = contratos.filter(c => !c.status_pagamento && new Date(c.data_vencimento) < hoje)
+                    .length;
+
+                document.getElementById('totalContratos').textContent = totalContratos;
+                document.getElementById('totalFaturamento').textContent = formatarValor(totalFaturamento);
+                document.getElementById('pendentes').textContent = pendentes;
+                document.getElementById('vencidos').textContent = vencidos;
+
+                const pagos = contratos.filter(c => c.status_pagamento).length;
+                criarChart(document.getElementById('chartStatus').getContext('2d'), 'pie', ['Pago', 'Pendente',
+                    'Vencido'
+                ], [pagos, pendentes, vencidos], ['#2ecc71', '#f1c40f', '#e74c3c']);
+
+                const byCity = {};
+                const revenueCity = {};
+                contratos.forEach(c => {
+                    const city = c.cidade || 'Sem cidade';
+                    byCity[city] = (byCity[city] || 0) + 1;
+                    revenueCity[city] = (revenueCity[city] || 0) + (parseFloat(c.valor_contrato) || 0);
+                });
+                criarChart(document.getElementById('chartCidades').getContext('2d'), 'bar', Object.keys(byCity),
+                    Object.values(byCity), ['#ffd700']);
+                criarChart(document.getElementById('chartFaturamento').getContext('2d'), 'bar', Object.keys(
+                    revenueCity), Object.values(revenueCity), ['#00ffff']);
+
+                const meses = {};
+                contratos.forEach(c => {
+                    const dt = new Date(c.data_vencimento);
+                    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+                    meses[key] = (meses[key] || 0) + (parseFloat(c.valor_contrato) || 0);
+                });
+                const keysOrdenadas = Object.keys(meses).sort();
+                if (charts['chartEvolucao']) charts['chartEvolucao'].destroy();
+                charts['chartEvolucao'] = new Chart(document.getElementById('chartEvolucao').getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: keysOrdenadas,
+                        datasets: [{
+                            label: 'Faturamento Mensal (R$)',
+                            data: keysOrdenadas.map(k => meses[k]),
+                            backgroundColor: 'rgba(255,215,0,0.2)',
+                            borderColor: '#ffd700',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+
+                const tbodyPendentes = document.querySelector("#tabelaPendentes tbody");
+                tbodyPendentes.innerHTML = '';
+                contratos.filter(c => !c.status_pagamento).forEach(c => {
+                    const tr = document.createElement('tr');
+                    const localTexto = locaisMap[c.local_divulgacao] || '—';
+                    tr.innerHTML = `
+        <td>${c.nome_empresa||'—'}</td>
+        <td>${formatarValor(c.valor_contrato)}</td>
+        <td>${formatarData(c.data_vencimento)}</td>
+        <td>${c.cidade||'—'}</td>
+        <td>${c.admin_responsavel||'—'}</td>
+        <td>${localTexto}</td>
+      `;
+                    tbodyPendentes.appendChild(tr);
+                });
+
+                const byAdmin = {};
+                contratos.forEach(c => {
+                    const a = c.admin_responsavel || 'Sem admin';
+                    byAdmin[a] = (byAdmin[a] || 0) + 1;
+                });
+                const tbodyAdmins = document.querySelector("#tabelaAdmins tbody");
+                tbodyAdmins.innerHTML = '';
+                Object.entries(byAdmin).forEach(([admin, qtd]) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${admin}</td><td>${qtd}</td>`;
+                    tbodyAdmins.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error("Erro ao carregar dashboard:", err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarDashboard);
+        document.getElementById('btnLogout').onclick = () => {
+            alert('Desconectando…');
+        };
+    </script>
+
+</body>
+
+</html>

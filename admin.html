@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fly Mídia - Painel Administrativo</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent1: #667eea;
+      --accent2: #764ba2;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --bg-dark: #0f1724;
+      --card: #fff;
+      --muted: #7e859f;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Inter",sans-serif}
+    body {
+      background: radial-gradient(1000px 800px at 10% 10%, rgba(102,126,234,0.08), transparent),
+                  radial-gradient(1000px 800px at 90% 90%, rgba(118,75,162,0.08), transparent),
+                  linear-gradient(180deg,#071027,#081222);
+      color: #f2f3f8;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    nav.navbar {
+      background: linear-gradient(90deg,var(--accent1),var(--accent2));
+      padding: 12px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    nav img {
+      height: 55px;
+      border-radius: 14px;
+      margin-right: 12px;
+    }
+    nav .navbar-brand {
+      font-weight: 700;
+      color: #fff !important;
+      letter-spacing: .4px;
+      font-size: 1.1rem;
+    }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: .3s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+    /* LINKS */
+    .nav-links {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 1rem;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
+    }
+    .nav-links a{
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: .3s;
+    }
+    .nav-links a.active { background: linear-gradient(90deg,var(--accent1),var(--accent2)); }
+    .nav-links a:hover { background: var(--accent2); }
+    .nav-links button {
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+    }
+    .nav-links button:hover {
+      background: linear-gradient(90deg,var(--accent1),var(--accent2));
+      border:none;
+    }
+  .nav-actions {
+    text-align: r;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .nav-actions a ,button{
+    color:var(--muted);
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-weight:600;
+    background:transparent;
+  }
+  .nav-actions a.active ,button.active{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:white;
+    box-shadow: 0 6px 20px rgba(102,126,234,0.12);
+  }
+
+    /* LOGIN */
+    #loginSection {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      background: linear-gradient(180deg,#0d1220,#111a33);
+    }
+    #loginSection img { width: 140px; margin-bottom: 20px; border-radius: 10px; }
+    #loginSection .card {
+      background: rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:14px;
+      padding:30px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.5);
+      color:white;
+      width: 320px;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;
+      color:white;
+    }
+
+    table {
+      width:100%;
+      color:white;
+      border-collapse: collapse;
+    }
+    th,td { padding: 10px; text-align:center; }
+    th { background: linear-gradient(90deg,var(--accent1),var(--accent2)); border:none; }
+    tr:nth-child(even){background:rgba(255,255,255,0.03)}
+
+    .status-pago { color: var(--success); font-weight:bold }
+    .status-pendente { color: var(--danger); font-weight:bold }
+
+    .btn {
+      border-radius:10px;
+      font-weight:600;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg,var(--accent1),var(--accent2));
+      border:none;
+    }
+    .btn-primary:hover { opacity:.85; }
+    .btn-success { background: var(--success); border:none; }
+    .btn-outline-secondary, .btn-outline-primary { color:#fff; border-color:rgba(255,255,255,0.2); }
+    .btn-outline-primary:hover { background: var(--accent1); border:none; }
+    .btn-outline-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* GRAFICOS */
+    #graficosSection {
+      display:none;
+      max-width:1200px;
+      margin:2rem auto;
+      background:rgba(255,255,255,0.04);
+      padding:1.5rem;
+      border-radius:14px;
+    }
+
+    @media (max-width:768px){
+      .container{padding:1rem;}
+      .nav-links{flex-wrap:wrap;}
+      table{font-size:0.9rem;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOGIN -->
+  <section id="loginSection">
+    <img src="PHOTO-2025-10-23-15-30-45.jpg" alt="">
+    <div class="card shadow text-center">
+      <h3 class="mb-3">Login Administrativo</h3>
+      <form onsubmit="loginAdmin(event)">
+        <div class="mb-3 text-start">
+          <label class="form-label">Email</label>
+          <input type="email" id="emailLogin" class="form-control" required>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Senha</label>
+          <input type="password" id="senhaLogin" class="form-control" required>
+        </div>
+        <p id="loginError" style="display:none;color:#ffbcbc;font-weight:bold;"></p>
+        <button type="submit" class="btn btn-primary w-100 mt-2">
+          <i class="bi bi-box-arrow-in-right"></i> Entrar
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark" id="navbar" style="display:none;">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <img src="PHOTO-2025-10-23-15-30-45.jpg" alt="Logo Fly Mídia">
+        <a class="navbar-brand">Fly Mídia - Admin</a>
+      </div>
+   
+    </div>
+  </nav>
+
+  <!-- LINKS -->
+  <div class="nav-actions" >
+    <a href="index.html" class="active">Cliente</a>
+    <a href="admin.html" >Admin</a>
+     <a href="grafico.html"> Ver Gráficos</a>
+    
+   
+ 
+    </div>
+  <!-- PAINEL ADMIN -->
+  <section id="adminSection" class="container" style="display:none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="fw-bold text-white">Painel de Contratos - Jeremoabo</h3>
+    </div>
+
+    <!-- FORM -->
+    <form id="contractForm" onsubmit="salvarContrato(event)" class="card p-4 mb-4">
+      <input type="hidden" id="editId">
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Nome da Empresa</label>
+          <input type="text" id="nomeEmpresa" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">CPF do Cliente</label>
+          <input type="text" id="cpfCliente" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Telefone</label>
+          <input type="tel" id="telefoneCliente" class="form-control" placeholder="(75) 99999-9999">
+        </div>
+      </div>
+
+      <hr class="border-light">
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Local de Divulgação</label>
+          <select id="localDivulgacao" class="form-select" onchange="atualizarOpcoesItens()" required>
+            <option value="">Selecione o local</option>
+            <option value="rodolfos">RODOLFOS</option>
+            <option value="2quatro2">2QUATRO2 BEACH</option>
+            <option value="combo">RODOLFOS + 2QUATRO2 BEACH</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Cidade</label>
+          <input type="text" id="cidade" class="form-control" value="Jeremoabo" readonly>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Admin Responsável</label>
+          <input type="text" id="adminResponsavel" class="form-control" placeholder="Seu nome">
+        </div>
+      </div>
+
+      <hr class="border-light">
+
+      <div id="itensContainer" class="mt-2">
+        <div class="item d-flex align-items-center mb-2">
+          <select class="tipoItem form-select" onchange="calcularTotal()" required>
+            <option value="">Selecione...</option>
+            <option value="banner" data-preco="59.99">Banner (R$59,99)</option>
+            <option value="videoGif" data-preco="79.99">Vídeo GIF (R$79,99)</option>
+            <option value="videoEmpresarial" data-preco="99.99">Vídeo Empresarial (R$99,99)</option>
+          </select>
+          <input type="number" class="quantidadeItem form-control ms-2" min="1" value="1"
+            onchange="calcularTotal()" style="width:80px;">
+          <button type="button" class="btn btn-outline-secondary ms-2" onclick="removerItem(this)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-outline-primary mt-3" onclick="adicionarItem()">
+        <i class="bi bi-plus-lg"></i> Adicionar Item
+      </button>
+
+      <hr class="border-light">
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Desconto (%)</label>
+          <input type="number" id="desconto" class="form-control" value="0" onchange="calcularTotal()">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Valor Total</label>
+          <input type="text" id="valorContrato" class="form-control" readonly>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Data de Vencimento</label>
+          <input type="date" id="dataVencimento" class="form-control" required>
+        </div>
+        <div class="col-md-3 d-flex align-items-center">
+          <div class="form-check mt-4">
+            <input class="form-check-input" type="checkbox" id="statusPagamento">
+            <label class="form-check-label">Pago</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="form-label">Observações</label>
+        <textarea id="observacoes" class="form-control" rows="2"></textarea>
+      </div>
+
+      <div class="mt-4 d-flex justify-content-between">
+        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Salvar Contrato</button>
+        <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+          <i class="bi bi-arrow-clockwise"></i> Limpar
+        </button>
+      </div>
+    </form>
+
+    <!-- TABELA -->
+    <div class="card p-3">
+      <h5><i class="bi bi-list-ul"></i> Contratos Cadastrados</h5>
+      <div class="table-responsive mt-3">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>CPF</th>
+              <th>Telefone</th>
+              <th>Itens</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Cidade</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="contractsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRAFICOS -->
+  <section id="graficosSection" class="container">
+    <div class="d-flex justify-content-between mb-3">
+      <h3><i class="bi bi-bar-chart-line"></i> Relatórios e Estatísticas</h3>
+      <button class="btn btn-outline-secondary" onclick="mostrarPainel()">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </button>
+    </div>
+    <canvas id="contratosChart" height="120"></canvas>
+  </section>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBn58dQwxfp-WAIpU3jcGQJ1ZFhs7AHjTk",
+      authDomain: "flymidia-ccd8f.firebaseapp.com",
+      projectId: "flymidia-ccd8f",
+      storageBucket: "flymidia-ccd8f.appspot.com",
+      messagingSenderId: "79513987797",
+      appId: "1:79513987797:web:1f3854bcaaf4500001d05c",
+      measurementId: "G-S89Y3ZTEG6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
+  <script src="script.js"></script>
+  
+</body>
+</html>

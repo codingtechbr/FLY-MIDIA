@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Área do Cliente - Fly Mídia</title>
+
+<!-- ===== ESTILOS INLINE (substitui o style antigo) ===== -->
+<style>
+  :root{
+    --bg-100: #0f1724; /* fundo escuro suave */
+    --card: #ffffff;
+    --muted: #8b8fa6;
+    --accent1: #667eea; /* azul da logo */
+    --accent2: #764ba2; /* roxo da logo */
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --glass: rgba(255,255,255,0.06);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif}
+  html,body{height:100%}
+  body{
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(102,126,234,0.08), transparent),
+                radial-gradient(900px 400px at 90% 90%, rgba(118,75,162,0.06), transparent),
+                linear-gradient(180deg, #071027 0%, #081222 100%);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+    padding:28px 16px;
+  }
+
+  /* NAVBAR */
+  .navbar{
+    max-width:1100px;
+    margin:0 auto 20px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:space-between;
+    background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    padding:14px 18px;
+    border-radius:12px;
+    backdrop-filter: blur(6px);
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+  }
+
+  .brand {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand img{
+    width:52px;
+    height:52px;
+    object-fit:cover;
+    border-radius:10px;
+    box-shadow: 0 6px 18px rgba(102,126,234,0.08), inset 0 -6px 14px rgba(0,0,0,0.2);
+    border:1px solid rgba(255,255,255,0.04);
+    background:linear-gradient(180deg,#fff 0%, #f7f8ff 100%);
+  }
+  .brand h1{
+    font-size:18px;
+    color:var(--card);
+    letter-spacing:0.2px;
+  }
+  .nav-actions {
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .nav-actions a{
+    color:var(--muted);
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-weight:600;
+    background:transparent;
+  }
+  .nav-actions a.active{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:white;
+    box-shadow: 0 6px 20px rgba(102,126,234,0.12);
+  }
+
+  /* container */
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 1fr 380px;
+    gap:20px;
+  }
+
+  /* MAIN CARD area */
+  .main{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  }
+
+  .card h2{
+    color:var(--card);
+    font-size:18px;
+    margin-bottom:6px;
+  }
+  .subtitle{ color:var(--muted); margin-bottom:12px; font-size:14px }
+
+  /* Form styles */
+  .form-row{ display:flex; gap:10px; align-items:center }
+  .form-group{ flex:1; display:flex; flex-direction:column; gap:8px }
+  label{ color:var(--muted); font-weight:600; font-size:13px }
+  input[type="text"]{
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.35);
+    color:var(--card);
+    font-size:15px;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  input[type="text"]::placeholder{ color: rgba(230,238,248,0.35) }
+  input[type="text"]:focus{ outline:none; border-color: rgba(102,126,234,0.5); box-shadow:0 6px 22px rgba(102,126,234,0.07) }
+
+  /* Buttons */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    border:none;
+    color: white;
+    background: linear-gradient(90deg,var(--accent1),var(--accent2));
+    box-shadow: 0 8px 24px rgba(102,126,234,0.14);
+  }
+  .btn.ghost{
+    background:transparent;
+    color:var(--card);
+    border:1px solid rgba(255,255,255,0.04);
+    font-weight:600;
+  }
+  .btn.small{ padding:8px 10px; font-size:14px; border-radius:8px }
+  .btn.px{
+    background: linear-gradient(90deg,#f6d365,#fda085);
+    color:#1b1b1b;
+    font-weight:800;
+  }
+.contract-location {
+    display: block !important;
+    color: #000 !important; /* Preta pra garantir contraste */
+    font-weight: bold;
+    font-size: 14px;
+}
+  .error-message{
+    display:none;
+    margin-top:10px;
+    padding:10px 12px;
+    background: rgba(231,76,60,0.12);
+    border-left:4px solid rgba(231,76,60,0.9);
+    color: #ffdfe0;
+    border-radius:8px;
+  }
+
+  /* contracts list */
+  #contractsList{ display:flex; flex-direction:column; gap:12px; margin-top:6px }
+
+  .contract-card{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .contract-top{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .contract-left{
+    display:flex; gap:12px; align-items:center;
+  }
+  .contract-location{
+    background: linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:white;
+    padding:6px 10px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:12px;
+    box-shadow:0 6px 20px rgba(118,75,162,0.12);
+  }
+
+  .contract-meta{ color:var(--muted); font-size:14px }
+  .contract-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:6px }
+
+  .badge{
+    font-weight:800;
+    padding:6px 10px;
+    border-radius:10px;
+    font-size:13px;
+  }
+  .status-pago{ background: rgba(46,204,113,0.08); color:var(--success); border:1px solid rgba(46,204,113,0.12) }
+  .status-pendente{ background: rgba(231,76,60,0.06); color:var(--danger); border:1px solid rgba(231,76,60,0.08) }
+  .status-vencer{ background: rgba(243,156,18,0.06); color:var(--warning); border:1px solid rgba(243,156,18,0.08) }
+
+  .contract-actions{ display:flex; gap:10px; margin-top:8px; flex-wrap:wrap }
+  .contract-actions .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.04) }
+
+  /* SIDEBAR resumo */
+  .sidebar{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    position:relative;
+  }
+  .summary{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .summary h3{ color:var(--card); margin-bottom:6px }
+  .summary .item{ display:flex; justify-content:space-between; color:var(--muted); font-weight:700; }
+
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    padding:18px;
+    border-radius:10px;
+    border:1px dashed rgba(255,255,255,0.03);
+    background: transparent;
+  }
+
+  /* footer note */
+  .note{ font-size:13px; color:var(--muted); margin-top:6px }
+
+  /* RESPONSIVE */
+  @media (max-width:980px){
+    .container{ grid-template-columns: 1fr; padding-bottom:40px }
+    .navbar{ padding:12px 14px }
+    .brand h1{ font-size:16px }
+  }
+
+  @media (max-width:520px){
+    .brand img{ width:44px;height:44px }
+    .btn{ padding:10px 12px }
+    .contract-card{ padding:12px }
+    .contract-top{ flex-direction:column; align-items:flex-start; gap:10px }
+  }
+</style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="brand">
+      <img src="PHOTO-2025-10-23-15-30-45.jpg" alt="Logo Fly Mídia">
+      <h1>Fly Mídia — Área do Cliente</h1>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="active">Cliente</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- MAIN AREA (esquerda) -->
+    <section class="main">
+      <!-- LOGIN / CONSULTA -->
+      <div class="card" id="loginCard">
+        <h2>Consultar Contratos</h2>
+        <p class="subtitle">Digite seu CPF para visualizar suas assinaturas, vencimentos e status.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cpfInput">CPF</label>
+            <input type="text" id="cpfInput" placeholder="000.000.000-00" maxlength="14" />
+          </div>
+          <div style="width:140px; display:flex; align-items:end;">
+            <button class="btn" style="width:100%" onclick="consultarCPF()">Consultar</button>
+          </div>
+        </div>
+
+        <div id="errorMessage" class="error-message" role="alert"></div>
+      </div>
+
+      <!-- ÁREA DO CLIENTE (inicialmente oculta) -->
+      <div class="card" id="clientArea" style="display:none;">
+        <div class="contract-top" style="margin-bottom:10px;">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex; flex-direction:column;">
+              <h2 id="clientName">Olá, Cliente</h2>
+              <div class="note">Aqui estão seus contratos encontrados.</div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn small ghost" onclick="sair()">Sair</button>
+            <!-- manter compatibilidade com abrirWhatsApp -->
+            <a class="btn small" href="https://wa.me/5575998713085" target="_blank" rel="noopener">Suporte via WhatsApp</a>
+          </div>
+        </div>
+
+        <div id="contractsList">
+          <!-- Exemplo que será substituído pelo JS -->
+          <div class="contract-card">
+  <div class="contract-top">
+    <div class="contract-left">
+      <div class="contract-location">LOCAL</div> <!-- aqui o JS substitui -->
+      <div style="margin-top:6px;">
+        <div style="font-weight:800; color:var(--card)">Nome do Cliente</div>
+        <div class="contract-meta">Plano — <span style="font-weight:700">R$ 0,00</span></div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="badge status-pendente">Pendente</div>
+      <div class="contract-meta" style="margin-top:6px">Vencimento: --/--/----</div>
+    </div>
+  </div>
+
+  <div class="contract-row">
+    <div class="contract-meta">Cidade: —</div>
+  </div>
+
+  <div class="contract-actions">
+    <button class="btn px">💸 Fazer PIX via WhatsApp</button>
+    <button class="btn ghost small">📋 Copiar INFO</button>
+    <a class="btn ghost small" href="#">🔍 Visualizar</a>
+  </div>
+</div>
+
+      </div>
+    </section>
+
+    <!-- SIDEBAR (direita) -->
+    <aside class="sidebar">
+      <div class="summary card">
+        <h3>Resumo Rápido</h3>
+        <div class="item"><span>Contratos encontrados</span><span id="res_count">—</span></div>
+        <div class="item"><span>Total pendente</span><span id="res_pending">—</span></div>
+        <div class="item"><span>Total pago</span><span id="res_paid">—</span></div>
+        <div class="item"><span>Próximo vencimento</span><span id="res_next">—</span></div>
+        <div style="margin-top:8px" class="note">Use seu CPF para consultar. Pagamentos via WhatsApp (PIX).</div>
+      </div>
+
+      <div class="card empty">
+        <strong>Dica:</strong>
+        <div style="margin-top:8px; color:var(--muted)">Mantenha seu CPF atualizado e, se tiver dúvidas, clique em "Suporte via WhatsApp".</div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- SCRIPTS -->
+  <!-- Firebase SDKs (mantive as no seu arquivo original) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <!-- seu script principal (preserve script.js) -->
+  <script src="script.js"></script>
+
+  <!-- Mantive a configuração Firebase e NÃO redeclarei abrirWhatsApp (já existe em script.js) -->
+  <script>
+    // Firebase config — mantive a configuração original (não altere)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBn58dQwxfp-WAIpU3jcGQJ1ZFhs7AHjTk",
+      authDomain: "flymidia-ccd8f.firebaseapp.com",
+      projectId: "flymidia-ccd8f",
+      storageBucket: "flymidia-ccd8f.appspot.com",
+      messagingSenderId: "79513987797",
+      appId: "1:79513987797:web:1f3854bcaaf4500001d05c",
+      measurementId: "G-S89Y3ZTEG6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Função auxiliar simples para sair (restaura a tela de consulta)
+    function sair(){
+      const loginCard = document.getElementById('loginCard');
+      const clientArea = document.getElementById('clientArea');
+      const contractsList = document.getElementById('contractsList');
+      const cpfInput = document.getElementById('cpfInput');
+      if (clientArea) clientArea.style.display = 'none';
+      if (loginCard) loginCard.style.display = 'block';
+      if (contractsList) contractsList.innerHTML = '';
+      if (cpfInput) cpfInput.value = '';
+      // reset sidebar
+      document.getElementById('res_count').textContent = '—';
+      document.getElementById('res_pending').textContent = '—';
+      document.getElementById('res_paid').textContent = '—';
+      document.getElementById('res_next').textContent = '—';
+      const err = document.getElementById('errorMessage');
+      if (err) { err.style.display = 'none'; err.textContent = ''; }
+    }
+
+    // Copiar para clipboard (reaproveita função do seu script.js se existir)
+    async function copiarParaClipboard(texto){
+      if (window.copiarParaClipboard){
+        // se script.js já define, usa ele
+        return window.copiarParaClipboard(texto);
+      }
+      try {
+        await navigator.clipboard.writeText(texto);
+        alert('Copiado para a área de transferência.');
+      } catch (e) {
+        prompt('Copie manualmente:', texto);
+      }
+    }
+
+    // Essa pequena rotina atualiza os resumos na sidebar — será chamada pelo seu script.js depois de consultar
+    // O seu script.js já retorna as informações necessárias; aqui fazemos apenas atualizações de UI caso queira.
+    // Exemplo de uso: atualizarResumo({count:2, pending:1, paid:1, next:'25/10/2025'});
+    function atualizarResumo(obj){
+      if (!obj) return;
+      if (obj.count !== undefined) document.getElementById('res_count').textContent = obj.count;
+      if (obj.pending !== undefined) document.getElementById('res_pending').textContent = obj.pending;
+      if (obj.paid !== undefined) document.getElementById('res_paid').textContent = obj.paid;
+      if (obj.next !== undefined) document.getElementById('res_next').textContent = obj.next;
+    }
+
+    // Observação: seu script.js já possui a função consultarCPF() que mostra os contratos em #contractsList.
+    // Se quiser, posso adaptar o script.js para também chamar atualizarResumo(...) automaticamente
+    // ao finalizar a consulta — quer que eu faça isso também no script.js agora?
+  </script>
+</body>
+</html>
